@@ -1,4 +1,4 @@
-FROM eclipse-temurin:17-jdk-slim AS build
+FROM amazoncorretto:17-alpine AS build
 WORKDIR /app
 COPY mvnw .
 COPY .mvn .mvn
@@ -7,7 +7,7 @@ RUN ./mvnw dependency:go-offline
 COPY src src
 RUN ./mvnw package -DskipTests
 
-FROM eclipse-temurin:17-jdk-slim
+FROM amazoncorretto:17-alpine
 WORKDIR /app
 COPY --from=build /app/target/*.jar app.jar
 EXPOSE 8080
