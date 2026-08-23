@@ -1,0 +1,85 @@
+# ============================
+# Backend (Spring Boot / Maven)
+# ============================
+backend/target/
+backend/.classpath
+backend/.project
+backend/.settings/
+backend/*.iml
+backend/.idea/
+backend/*.log
+backend/application-local.yml
+backend/.env
+backend/*.pem
+backend/*.key
+backend/*.crt
+
+# ============================
+# Frontend (React / Vite)
+# ============================
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+frontend/.env.local
+frontend/*.log
+frontend/.vercel/
+
+# ============================
+# IDE / Editor
+# ============================
+.idea/
+*.iml
+.vscode/
+.settings/
+.project
+.classpath
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# ============================
+# Logs & Temp
+# ============================
+*.log
+*.tmp
+*.temp
+logs/
+
+# ============================
+# Environment & Secrets
+# ============================
+.env
+.env.*
+!/.env.example
+*.pem
+*.key
+*.crt
+*.p12
+
+# ============================
+# OS-specific
+# ============================
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# ============================
+# Build outputs (generic)
+# ============================
+*.jar
+*.war
+*.ear
+*.class
+*.zip
+*.tar.gz
+
+# ============================
+# Other
+# ============================
+.sass-cache/
+*.pid
+
+.vercel/
