@@ -29,6 +29,9 @@ const ProductDetailPage: React.FC = () => {
     }
   };
 
+  // Determine the maximum allowed quantity
+  const maxQuantity = product?.stockQuantity ?? 999;
+
   if (loading) return <Loader />;
   if (!product) return <div>Product not found</div>;
 
@@ -66,16 +69,26 @@ const ProductDetailPage: React.FC = () => {
               id="quantity"
               type="number"
               min="1"
+              max={maxQuantity}               // <-- limit to stock
               value={quantity}
-              onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
+              onChange={(e) => {
+                const val = parseInt(e.target.value) || 1;
+                setQuantity(Math.min(Math.max(val, 1), maxQuantity));
+              }}
               className="w-20 border rounded px-3 py-2"
             />
             <button
               onClick={handleAddToCart}
-              className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition"
-              disabled={!product.inStock || (product.stockQuantity !== undefined && product.stockQuantity <= 0)}
+              className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition disabled:opacity-50"
+              disabled={
+                !product.inStock ||
+                product.stockQuantity <= 0 ||
+                quantity > maxQuantity
+              }
             >
-              {product.inStock && (product.stockQuantity === undefined || product.stockQuantity > 0) ? 'Add to Cart' : 'Out of Stock'}
+              {product.inStock && product.stockQuantity > 0 && quantity <= maxQuantity
+                ? 'Add to Cart'
+                : 'Out of Stock'}
             </button>
           </div>
         </div>
