@@ -45,18 +45,31 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
         System.out.println("🔍 OAuth2 login attempt: provider=" + provider + ", email=" + email + ", authId=" + authId);
 
-        // The variables authId, email, name are effectively final here
+        // 1. Try to find user by authProvider + authId (existing user with same provider)
         User user = userRepository.findByAuthProviderAndAuthId(provider, authId)
                 .orElseGet(() -> {
-                    System.out.println("🆕 New user, creating...");
-                    User newUser = new User();
-                    newUser.setEmail(email);
-                    newUser.setName(name);
-                    newUser.setAuthProvider(provider);
-                    newUser.setAuthId(authId);
-                    newUser.setRoles(Set.of("USER"));
-                    System.out.println("👤 Saved user with roles: " + newUser.getRoles());
-                    return userRepository.save(newUser);
+                    // 2. If not found, try to find by email (for users who already signed up with another provider)
+                    return userRepository.findByEmail(email)
+                            .map(existingUser -> {
+                                System.out.println("📧 User already exists with email: " + email + " (provider: " + existingUser.getAuthProvider() + ")");
+                                // Update the authProvider and authId to allow login with new provider
+                                existingUser.setAuthProvider(provider);
+                                existingUser.setAuthId(authId);
+                                System.out.println("🔄 Updated user with provider: " + provider);
+                                return userRepository.save(existingUser);
+                            })
+                            .orElseGet(() -> {
+                                // 3. New user – create it
+                                System.out.println("🆕 New user, creating...");
+                                User newUser = new User();
+                                newUser.setEmail(email);
+                                newUser.setName(name);
+                                newUser.setAuthProvider(provider);
+                                newUser.setAuthId(authId);
+                                newUser.setRoles(Set.of("USER"));
+                                System.out.println("👤 Saved user with roles: " + newUser.getRoles());
+                                return userRepository.save(newUser);
+                            });
                 });
 
         System.out.println("✅ Existing/fetched user: " + user.getEmail() + " with roles: " + user.getRoles());
