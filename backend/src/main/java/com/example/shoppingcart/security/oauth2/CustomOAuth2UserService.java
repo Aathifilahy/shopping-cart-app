@@ -26,19 +26,26 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         String provider = userRequest.getClientRegistration().getRegistrationId();
 
         Map<String, Object> attributes = oAuth2User.getAttributes();
-        String authId = (String) attributes.get("sub");
-        String email = (String) attributes.get("email");
-        String name = (String) attributes.get("name");
 
-        // Fallback for Facebook (and other providers)
-        if (email == null) {
+        // Extract authId, email, name based on provider
+        String authId;
+        String email;
+        String name;
+
+        if ("google".equals(provider)) {
+            authId = (String) attributes.get("sub");
             email = (String) attributes.get("email");
+            name = (String) attributes.get("name");
+        } else {
+            // Facebook and others
             authId = (String) attributes.get("id");
+            email = (String) attributes.get("email");
             name = (String) attributes.get("name");
         }
 
         System.out.println("🔍 OAuth2 login attempt: provider=" + provider + ", email=" + email + ", authId=" + authId);
 
+        // The variables authId, email, name are effectively final here
         User user = userRepository.findByAuthProviderAndAuthId(provider, authId)
                 .orElseGet(() -> {
                     System.out.println("🆕 New user, creating...");
