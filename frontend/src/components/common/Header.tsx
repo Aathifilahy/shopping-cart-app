@@ -9,6 +9,8 @@ const Header: React.FC = () => {
   const { cart } = useCart();
   const itemCount = cart?.items?.reduce((acc, item) => acc + item.quantity, 0) || 0;
 
+  const isAdmin = user?.roles?.includes('ADMIN');
+
   return (
     <header className="bg-white shadow-md">
       <div className="container mx-auto px-4 py-3 flex justify-between items-center">
@@ -17,6 +19,14 @@ const Header: React.FC = () => {
         </Link>
         <nav className="flex items-center space-x-6">
           <Link to="/categories" className="hover:text-green-600">Categories</Link>
+
+          {/* Admin Panel button – only for admins */}
+          {isAdmin && (
+            <Link to="/admin" className="hover:text-green-600 font-medium text-blue-600">
+              Admin Panel
+            </Link>
+          )}
+
           <Link to="/cart" className="relative">
             <CartIcon />
             {itemCount > 0 && (
@@ -25,6 +35,7 @@ const Header: React.FC = () => {
               </span>
             )}
           </Link>
+
           {user ? (
             <div className="flex items-center space-x-4">
               <span className="text-sm">{user.name}</span>

@@ -7,4 +7,6 @@ export interface Product {
   imageUrl: string;
   inStock: boolean;
   unit: string;
+  stockQuantity: number;   // new
+  expirationDate?: string; // optional (date string)
 }

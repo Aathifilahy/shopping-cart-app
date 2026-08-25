@@ -18,6 +18,8 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialData, onSubmit, onCanc
     imageUrl: '',
     inStock: true,
     unit: 'piece',
+    stockQuantity: 0,
+    expirationDate: '',
     ...initialData,
   });
   const [categories, setCategories] = useState<Category[]>([]);
@@ -51,6 +53,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialData, onSubmit, onCanc
           className="w-full border rounded px-3 py-2"
         />
       </div>
+
       <div>
         <label className="block text-sm font-medium">Description</label>
         <textarea
@@ -60,6 +63,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialData, onSubmit, onCanc
           className="w-full border rounded px-3 py-2"
         />
       </div>
+
       <div>
         <label className="block text-sm font-medium">Price</label>
         <input
@@ -72,6 +76,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialData, onSubmit, onCanc
           className="w-full border rounded px-3 py-2"
         />
       </div>
+
       <div>
         <label className="block text-sm font-medium">Category</label>
         <select
@@ -87,6 +92,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialData, onSubmit, onCanc
           ))}
         </select>
       </div>
+
       <div>
         <label className="block text-sm font-medium">Image URL</label>
         <input
@@ -96,6 +102,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialData, onSubmit, onCanc
           className="w-full border rounded px-3 py-2"
         />
       </div>
+
       <div>
         <label className="block text-sm font-medium">Unit</label>
         <input
@@ -105,6 +112,31 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialData, onSubmit, onCanc
           className="w-full border rounded px-3 py-2"
         />
       </div>
+
+      {/* New fields */}
+      <div>
+        <label className="block text-sm font-medium">Stock Quantity</label>
+        <input
+          name="stockQuantity"
+          type="number"
+          min="0"
+          value={formData.stockQuantity || 0}
+          onChange={handleChange}
+          className="w-full border rounded px-3 py-2"
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium">Expiration Date</label>
+        <input
+          name="expirationDate"
+          type="date"
+          value={formData.expirationDate || ''}
+          onChange={handleChange}
+          className="w-full border rounded px-3 py-2"
+        />
+      </div>
+
       <div className="flex items-center">
         <input
           name="inStock"
@@ -115,6 +147,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialData, onSubmit, onCanc
         />
         <label className="text-sm font-medium">In Stock</label>
       </div>
+
       <div className="flex space-x-2">
         <button type="submit" className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
           Save

@@ -3,6 +3,8 @@ package com.example.shoppingcart.model;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.LocalDate;
+
 @Document(collection = "products")
 public class Product {
     @Id
@@ -14,6 +16,10 @@ public class Product {
     private String imageUrl;
     private boolean inStock = true;
     private String unit;
+
+    // New fields
+    private int stockQuantity = 0;          // inventory count
+    private LocalDate expirationDate;      // expiry date (optional)
 
     // Getters and Setters
     public String getId() { return id; }
@@ -32,4 +38,9 @@ public class Product {
     public void setInStock(boolean inStock) { this.inStock = inStock; }
     public String getUnit() { return unit; }
     public void setUnit(String unit) { this.unit = unit; }
+
+    public int getStockQuantity() { return stockQuantity; }
+    public void setStockQuantity(int stockQuantity) { this.stockQuantity = stockQuantity; }
+    public LocalDate getExpirationDate() { return expirationDate; }
+    public void setExpirationDate(LocalDate expirationDate) { this.expirationDate = expirationDate; }
 }
