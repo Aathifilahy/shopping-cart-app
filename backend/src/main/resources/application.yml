@@ -28,6 +28,8 @@ server:
     context-path: /api
 
 app:
+  frontend:
+    url: ${FRONTEND_URL:http://localhost:3000}
   jwt:
     secret: ${JWT_SECRET:mySecretKeyWithAtLeast32CharsForHS256}
     expiration-ms: 86400000
