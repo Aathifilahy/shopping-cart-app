@@ -51,6 +51,15 @@ const ProductDetailPage: React.FC = () => {
             </span>
             <span className="text-sm text-gray-500 ml-2">per {product.unit}</span>
           </div>
+
+          {/* Stock & Expiry Info */}
+          <div className="mt-4 space-y-1 text-sm">
+            <p><span className="font-medium">Stock:</span> {product.stockQuantity !== undefined ? product.stockQuantity : 'N/A'} {product.unit}</p>
+            {product.expirationDate && (
+              <p><span className="font-medium">Expires:</span> {new Date(product.expirationDate).toLocaleDateString()}</p>
+            )}
+          </div>
+
           <div className="mt-6 flex items-center space-x-4">
             <label htmlFor="quantity" className="font-medium">Qty:</label>
             <input
@@ -64,9 +73,9 @@ const ProductDetailPage: React.FC = () => {
             <button
               onClick={handleAddToCart}
               className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition"
-              disabled={!product.inStock}
+              disabled={!product.inStock || (product.stockQuantity !== undefined && product.stockQuantity <= 0)}
             >
-              {product.inStock ? 'Add to Cart' : 'Out of Stock'}
+              {product.inStock && (product.stockQuantity === undefined || product.stockQuantity > 0) ? 'Add to Cart' : 'Out of Stock'}
             </button>
           </div>
         </div>

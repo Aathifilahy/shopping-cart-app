@@ -23,36 +23,36 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     @Transactional
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         OAuth2User oAuth2User = super.loadUser(userRequest);
-        final String provider = userRequest.getClientRegistration().getRegistrationId();
+        String provider = userRequest.getClientRegistration().getRegistrationId();
 
         Map<String, Object> attributes = oAuth2User.getAttributes();
-        
-        // Extract authId, email, name with fallback for Facebook
-        final String authId;
-        final String email;
-        final String name;
+        String authId = (String) attributes.get("sub");
+        String email = (String) attributes.get("email");
+        String name = (String) attributes.get("name");
 
-        if ("google".equals(provider)) {
-            authId = (String) attributes.get("sub");
+        // Fallback for Facebook (and other providers)
+        if (email == null) {
             email = (String) attributes.get("email");
-            name = (String) attributes.get("name");
-        } else {
-            // Facebook and others
             authId = (String) attributes.get("id");
-            email = (String) attributes.get("email");
             name = (String) attributes.get("name");
         }
 
+        System.out.println("🔍 OAuth2 login attempt: provider=" + provider + ", email=" + email + ", authId=" + authId);
+
         User user = userRepository.findByAuthProviderAndAuthId(provider, authId)
                 .orElseGet(() -> {
+                    System.out.println("🆕 New user, creating...");
                     User newUser = new User();
                     newUser.setEmail(email);
                     newUser.setName(name);
                     newUser.setAuthProvider(provider);
                     newUser.setAuthId(authId);
                     newUser.setRoles(Set.of("USER"));
+                    System.out.println("👤 Saved user with roles: " + newUser.getRoles());
                     return userRepository.save(newUser);
                 });
+
+        System.out.println("✅ Existing/fetched user: " + user.getEmail() + " with roles: " + user.getRoles());
 
         return new CustomOAuth2User(user, oAuth2User.getAttributes());
     }
