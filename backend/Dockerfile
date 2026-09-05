@@ -1,20 +1,20 @@
-# Build stage – uses Maven to compile and package the app
+# Build stage
 FROM maven:3.8-openjdk-17 AS build
 WORKDIR /app
 
-# Copy pom.xml and download dependencies (cached layer)
+# Copy pom.xml first to cache dependencies (optional but good)
 COPY pom.xml .
-RUN mvn dependency:go-offline
-
-# Copy source code and build
+# Let mvn resolve dependencies during package (no separate go-offline)
 COPY src ./src
-RUN mvn package -DskipTests
 
-# Runtime stage – uses lightweight Amazon Corretto JRE
+# Build the application (skip tests to speed up)
+RUN mvn clean package -DskipTests
+
+# Runtime stage
 FROM amazoncorretto:17-alpine
 WORKDIR /app
 
-# Copy the built JAR from the build stage
+# Copy the built JAR
 COPY --from=build /app/target/*.jar app.jar
 
 EXPOSE 8080
