@@ -4,6 +4,7 @@ import { getProduct } from '../api/productApi';
 import { Product } from '../types/Product';
 import { formatCurrency } from '../utils/currencyFormatter';
 import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext';
 import Loader from '../components/common/Loader';
 import toast from 'react-hot-toast';
 
@@ -13,6 +14,8 @@ const ProductDetailPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
   const { addItem } = useCart();
+  const { user } = useAuth();
+  const isAdmin = user?.roles?.includes('ADMIN');
 
   useEffect(() => {
     if (id) {
@@ -29,7 +32,6 @@ const ProductDetailPage: React.FC = () => {
     }
   };
 
-  // Determine the maximum allowed quantity
   const maxQuantity = product?.stockQuantity ?? 999;
 
   if (loading) return <Loader />;
@@ -55,7 +57,6 @@ const ProductDetailPage: React.FC = () => {
             <span className="text-sm text-gray-500 ml-2">per {product.unit}</span>
           </div>
 
-          {/* Stock & Expiry Info */}
           <div className="mt-4 space-y-1 text-sm">
             <p><span className="font-medium">Stock:</span> {product.stockQuantity !== undefined ? product.stockQuantity : 'N/A'} {product.unit}</p>
             {product.expirationDate && (
@@ -63,34 +64,37 @@ const ProductDetailPage: React.FC = () => {
             )}
           </div>
 
-          <div className="mt-6 flex items-center space-x-4">
-            <label htmlFor="quantity" className="font-medium">Qty:</label>
-            <input
-              id="quantity"
-              type="number"
-              min="1"
-              max={maxQuantity}               // <-- limit to stock
-              value={quantity}
-              onChange={(e) => {
-                const val = parseInt(e.target.value) || 1;
-                setQuantity(Math.min(Math.max(val, 1), maxQuantity));
-              }}
-              className="w-20 border rounded px-3 py-2"
-            />
-            <button
-              onClick={handleAddToCart}
-              className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition disabled:opacity-50"
-              disabled={
-                !product.inStock ||
-                product.stockQuantity <= 0 ||
-                quantity > maxQuantity
-              }
-            >
-              {product.inStock && product.stockQuantity > 0 && quantity <= maxQuantity
-                ? 'Add to Cart'
-                : 'Out of Stock'}
-            </button>
-          </div>
+          {/* Only show add-to-cart controls for non-admin users */}
+          {!isAdmin && (
+            <div className="mt-6 flex items-center space-x-4">
+              <label htmlFor="quantity" className="font-medium">Qty:</label>
+              <input
+                id="quantity"
+                type="number"
+                min="1"
+                max={maxQuantity}
+                value={quantity}
+                onChange={(e) => {
+                  const val = parseInt(e.target.value) || 1;
+                  setQuantity(Math.min(Math.max(val, 1), maxQuantity));
+                }}
+                className="w-20 border rounded px-3 py-2"
+              />
+              <button
+                onClick={handleAddToCart}
+                className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition disabled:opacity-50"
+                disabled={
+                  !product.inStock ||
+                  product.stockQuantity <= 0 ||
+                  quantity > maxQuantity
+                }
+              >
+                {product.inStock && product.stockQuantity > 0 && quantity <= maxQuantity
+                  ? 'Add to Cart'
+                  : 'Out of Stock'}
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>

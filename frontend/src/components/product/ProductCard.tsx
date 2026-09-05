@@ -3,6 +3,7 @@ import { Product } from '../../types/Product';
 import { formatCurrency } from '../../utils/currencyFormatter';
 import { Link } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
+import { useAuth } from '../../context/AuthContext';
 
 interface ProductCardProps {
   product: Product;
@@ -10,6 +11,8 @@ interface ProductCardProps {
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const { addItem } = useCart();
+  const { user } = useAuth();
+  const isAdmin = user?.roles?.includes('ADMIN');
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -29,12 +32,14 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           <p className="text-gray-600 text-sm truncate">{product.description}</p>
           <div className="flex justify-between items-center mt-2">
             <span className="text-green-700 font-bold">{formatCurrency(product.price)}</span>
-            <button
-              onClick={handleAddToCart}
-              className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700 text-sm"
-            >
-              Add to Cart
-            </button>
+            {!isAdmin && (
+              <button
+                onClick={handleAddToCart}
+                className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700 text-sm"
+              >
+                Add to Cart
+              </button>
+            )}
           </div>
         </div>
       </Link>
