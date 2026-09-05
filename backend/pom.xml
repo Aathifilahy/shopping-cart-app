@@ -73,15 +73,15 @@
 
         <!-- WebAuthn (Passkey) -->
         <dependency>
-            <groupId>com.yubico</groupId>
-            <artifactId>webauthn-server-core</artifactId>
-            <version>2.5.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.yubico</groupId>
-            <artifactId>webauthn-server-attestation</artifactId>
-            <version>2.5.0</version>
-        </dependency>
+    <groupId>com.yubico</groupId>
+    <artifactId>webauthn-server-core</artifactId>
+    <version>2.4.0</version>
+</dependency>
+<dependency>
+    <groupId>com.yubico</groupId>
+    <artifactId>webauthn-server-attestation</artifactId>
+    <version>2.4.0</version>
+</dependency>
 
         <!-- Lombok -->
         <dependency>

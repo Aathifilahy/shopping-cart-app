@@ -4,6 +4,7 @@ import com.example.shoppingcart.security.jwt.JwtAuthenticationEntryPoint;
 import com.example.shoppingcart.security.jwt.JwtAuthenticationFilter;
 import com.example.shoppingcart.security.oauth2.CustomOAuth2UserService;
 import com.example.shoppingcart.security.oauth2.OAuth2AuthenticationSuccessHandler;
+import com.example.shoppingcart.security.passkey.PasskeyAuthenticationProvider;  // ✅ add this import
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -31,7 +32,7 @@ public class SecurityConfig {
     private final JwtAuthenticationEntryPoint unauthorizedHandler;
     private final CustomOAuth2UserService oAuth2UserService;
     private final OAuth2AuthenticationSuccessHandler oAuth2SuccessHandler;
-    // private final PasskeyAuthenticationProvider passkeyAuthenticationProvider; // commented out
+    private final PasskeyAuthenticationProvider passkeyAuthenticationProvider;  // ✅ uncommented
 
     @Value("${app.cors.allowed-origins:http://localhost:3000}")
     private String allowedOrigins;
@@ -53,7 +54,7 @@ public class SecurityConfig {
                 .userInfoEndpoint(userInfo -> userInfo.userService(oAuth2UserService))
                 .successHandler(oAuth2SuccessHandler)
             )
-            // .authenticationProvider(passkeyAuthenticationProvider) // commented out
+            .authenticationProvider(passkeyAuthenticationProvider)  // ✅ uncommented
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
